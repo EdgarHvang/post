@@ -8,6 +8,7 @@ import edu.miu.post.dto.response.PostsResponse;
 import edu.miu.post.dto.request.NewPostRequest;
 import edu.miu.post.dto.request.UpdatePostRequest;
 import edu.miu.post.entity.Post;
+import edu.miu.post.exception.BusinessException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -18,16 +19,16 @@ import java.util.List;
  */
 public interface PostService {
 
-    Post add(NewPostRequest newPostRequest, HttpServletRequest req);
+    Post add(NewPostRequest newPostRequest, HttpServletRequest req) throws BusinessException;
 
-    Post update(UpdatePostRequest updatePostRequest, HttpServletRequest req);
+    Post update(UpdatePostRequest updatePostRequest, HttpServletRequest req) throws BusinessException;
 
-    DeletePostResponse delete(Long postId, HttpServletRequest req);
+    DeletePostResponse delete(Long postId, HttpServletRequest req) throws BusinessException;
 
-    List<PostsResponse>  getAll(HttpServletRequest req);
+    List<PostsResponse>  getAll(HttpServletRequest req) throws BusinessException;
 
-    LongestPostResponse longest(HttpServletRequest req);
+    LongestPostResponse longest(HttpServletRequest req) throws BusinessException;
 
-    LikedPostResonse likes(LikedRequest likedRequest, HttpServletRequest req);
+    LikedPostResonse likes(LikedRequest likedRequest, HttpServletRequest req) throws BusinessException;
 
 }

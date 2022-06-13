@@ -5,16 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikedRequest {
-    private String title;
+public class LikedRequest extends NewPostRequest{
 
-    private String picture;
-
-    private String content;
-
+    @NotNull
     private Long postId;
+
 }

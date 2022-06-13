@@ -5,18 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdatePostRequest {
+public class UpdatePostRequest extends NewPostRequest{
 
-    private String title;
-
-    private String picture;
-
-    private String content;
-
+    @NotNull
     private Long id;
 }

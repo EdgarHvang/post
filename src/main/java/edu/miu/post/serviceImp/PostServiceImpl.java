@@ -8,6 +8,8 @@ import edu.miu.post.dto.response.PostsResponse;
 import edu.miu.post.dto.request.NewPostRequest;
 import edu.miu.post.dto.request.UpdatePostRequest;
 import edu.miu.post.entity.Post;
+import edu.miu.post.exception.BusinessException;
+import edu.miu.post.helper.Localization;
 import edu.miu.post.repository.PostRepository;
 import edu.miu.post.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +29,26 @@ public class PostServiceImpl implements PostService {
     @Autowired
     PostRepository postRepository;
 
-    public Post add(NewPostRequest newPostRequest, HttpServletRequest req) {
+    @Autowired
+    Localization localization;
+
+    public Post add(NewPostRequest newPostRequest, HttpServletRequest req) throws BusinessException {
+
         Post post = new Post(newPostRequest.getTitle(), newPostRequest.getPicture(), newPostRequest.getContent());
         post.setUserId(Long.parseLong(req.getHeader("user_id")));
         postRepository.save(post);
+
         return post;
     }
 
-    public Post update(UpdatePostRequest updatePostRequest, HttpServletRequest req) {
-        Post post = new Post(updatePostRequest.getId(), updatePostRequest.getTitle(), updatePostRequest.getPicture(), updatePostRequest.getContent());
+    public Post update(UpdatePostRequest updatePostRequest, HttpServletRequest req) throws BusinessException{
+        Post post = new Post(updatePostRequest.getId(), updatePostRequest.getTitle(),
+                updatePostRequest.getPicture(), updatePostRequest.getContent());
+
         if (postRepository.findById(post.getId()).get().getUserId() == Long.parseLong(req.getHeader("user_id"))) {
             post.setUserId(Long.parseLong(req.getHeader("user_id")));
             postRepository.save(post);
+
             return post;
         } else {
             return null;
@@ -46,7 +56,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public DeletePostResponse delete(Long postId, HttpServletRequest req) {
+    public DeletePostResponse delete(Long postId, HttpServletRequest req) throws BusinessException{
         long userId = Long.parseLong(req.getHeader("user_id"));
         Post post = postRepository.findById(postId).get();
         DeletePostResponse response = new DeletePostResponse();
@@ -59,7 +69,7 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    public List<PostsResponse> getAll(HttpServletRequest req) {
+    public List<PostsResponse> getAll(HttpServletRequest req) throws BusinessException{
         Long userId = Long.parseLong(req.getHeader("user_id"));
         List<PostsResponse> responses = new ArrayList<>();
         postRepository.findAllByUserId(userId).forEach(post -> {
@@ -71,7 +81,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public LongestPostResponse longest(HttpServletRequest req) {
+    public LongestPostResponse longest(HttpServletRequest req) throws BusinessException{
         Long userId = Long.parseLong(req.getHeader("user_id"));
         List<Post> posts = postRepository.findTheLongest(userId);
 
@@ -85,7 +95,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public LikedPostResonse likes(LikedRequest likedRequest, HttpServletRequest req){
+    public LikedPostResonse likes(LikedRequest likedRequest, HttpServletRequest req) throws BusinessException{
         Long userId = Long.parseLong(req.getHeader("user_id"));
         Post post = postRepository.findById(likedRequest.getPostId()).get();
         if (post.getUserId() == userId){
